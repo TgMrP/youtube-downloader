@@ -1,0 +1,19 @@
+{
+  "name": "youtube-downloader",
+  "version": "0.0.1",
+  "description": "A tool do download youtube video as mp3/mp4 file",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node ./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://www.rangit.tk/TgMrP/youtube-downloader"
+  },
+  "keywords": [
+    "youtube",
+    "downloader"
+  ],
+  "author": "TgMrP",
+  "license": "ISC"
+}
