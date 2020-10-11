@@ -15,7 +15,7 @@ app.use(volleyball);
 app.use(helmet());
 app.use(compression());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../client/dist')));
+app.use(express.static(path.join(__dirname, 'www')));
 
 app.get('/mp3/:id', async (req, res) => {
   const info = await ytdl.getInfo(req.params.id);
@@ -73,7 +73,7 @@ app.get('/info/:id', async (req, res) => {
   }
 });
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+  res.sendFile(path.join(__dirname, 'www/index.html'));
 });
 
 // ------------LISTEN--------------------
