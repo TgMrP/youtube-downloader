@@ -3,7 +3,7 @@
     <header class="hf">
       <div class="const">
         <div class="center flex items-center justify-center w-full">
-          <img src="https://cdn4.iconfinder.com/data/icons/social-media-and-logos-11/32/Logo_Youtube-512.png" alt="" class="h-16 mr-2">
+          <img :src="require('@/assets/Logo.webp')" alt="" class="h-16 mr-2">
           <span class="flogo text-xl md:text-3xl">YouTube Downloader</span>
         </div>
       </div>
