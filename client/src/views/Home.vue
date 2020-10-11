@@ -27,17 +27,23 @@
       </div>
        <div class="flex justify-center mt-10">
          <button
+          :disabled="!canDownload"
           class="
             px-6 py-4
             hover:bg-red-500 hover:text-youtube-900
             bg-youtube-500 text-red-500
             rounded-full
+            uppercase
           "
          >
-          Download as: {{ type }}
+          Download {{ type }}
          </button>
        </div>
     </form>
+    <div class="flex flex-col items-center justify-center mt-8" v-if="data">
+      <img :src="data.thumbnail.url" alt="" class="h-64 w-64 border rounded-lg">
+      <div class="text-2xl mt-4">{{ data.title }}</div>
+    </div>
   </div>
 </template>
 
@@ -48,19 +54,49 @@ export default {
   name: 'Homes',
   data() {
     return {
+      canDownload: false,
+      data: '',
       type: 'mp3',
       url: '',
+      url_debounce: '',
       error: '',
+      debounceTimeout: null,
     };
   },
+  watch: {
+    url() {
+      clearTimeout(this.debounceTimeout);
+      this.debounceTimeout = setTimeout(() => {
+        this.getResults();
+      }, 500);
+    },
+  },
   methods: {
+    checkValid() {
+      const regexURL = this.url.match(/^(http(s)??:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+$/);
+      const regexID = this.url.match(/^([a-zA-Z0-9\-_])+$/);
+
+      return !(!regexURL && !regexID);
+    },
+    async getResults() {
+      this.canDownload = false;
+      this.data = '';
+      if (this.checkValid()) {
+        let id = this.url;
+        id = id.replace('https://www.youtube.com/watch?v=', '');
+        id = id.replace('https://www.youtube.de/watch?v=', '');
+        const response = await fetch(`/info/${id}`);
+        const data = await response.json();
+        if (data) {
+          this.data = data;
+          this.canDownload = true;
+        }
+      }
+    },
     async download() {
       this.error = '';
       let id = this.url;
-      const regexURL = id.match(/^(http(s)??:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+$/);
-      const regexID = id.match(/^([a-zA-Z0-9\-_])+$/);
-
-      if (!regexURL && !regexID) {
+      if (!this.checkValid()) {
         this.error = 'Please enter valid youtube URL / ID';
       } else {
         id = id.replace('https://www.youtube.com/watch?v=', '');
@@ -90,5 +126,9 @@ export default {
   &.active {
     @apply cursor-default;
   }
+}
+
+button:disabled {
+  @apply opacity-25 cursor-default;
 }
 </style>
