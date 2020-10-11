@@ -24,10 +24,6 @@ app.get('/mp3/:id', async (req, res) => {
   ytdl(req.params.id, { filter: 'audioonly' }, {
     format: 'mpeg',
   }).pipe(res);
-  res.json({
-    error: true,
-    message: 'Problem With Download',
-  });
 });
 
 app.get('/mp4/:id', async (req, res) => {
