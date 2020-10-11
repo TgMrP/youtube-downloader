@@ -1,7 +1,7 @@
 {
   "name": "youtube-downloader",
   "version": "0.0.1",
-  "description": "A tool do download youtube video as mp3/mp4 file",
+  "description": "A tool to download youtube video as mp3/mp4 format",
   "main": "src/index.js",
   "scripts": {
     "start": "node ./src/index.js",
