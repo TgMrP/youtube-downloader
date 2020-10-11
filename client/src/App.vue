@@ -3,7 +3,6 @@
     <header class="hf">
       <div class="const">
         <div class="center flex items-center justify-center w-full">
-          <img src="Logo.webp" alt="" class="h-16 mr-2">
           <span class="flogo text-xl md:text-3xl">YouTube Downloader</span>
         </div>
       </div>
