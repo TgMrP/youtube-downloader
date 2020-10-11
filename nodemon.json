@@ -1,0 +1,8 @@
+{
+  "events": {
+
+  },
+  "ignore": ["client/dist/*"]
+}
+
+//"restart": "cd client && npm run build"

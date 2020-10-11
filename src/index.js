@@ -1,42 +1,62 @@
 const express = require('express');
-const app = express();
+const path = require('path');
+
 const ytdl = require('ytdl-core');
+const cors = require('cors');
+const helmet = require('helmet');
+const volleyball = require('volleyball');
+const compression = require('compression');
 const utf8 = require('utf8');
 
-app.get('/', (req, res) => {
-  res.json({
-    'message': 'What?!'
-  });
-});
+const app = express();
+
+app.use(cors());
+app.use(volleyball);
+app.use(helmet());
+app.use(compression());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
 app.get('/mp3/:id', async (req, res) => {
   const info = await ytdl.getInfo(req.params.id);
-  const url = await ytdl(req.params.id, { filter: 'audioonly' }, {
-    format: 'mpeg'
-  });
-
   const filename = utf8.encode(info.videoDetails.title);
   res.header('Content-Disposition', `attachment; filename = ${filename}.mp3`);
-  url.pipe(res);
+  try {
+    ytdl(req.params.id, { filter: 'audioonly' }, {
+      format: 'mpeg',
+    }).pipe(res);
+  } catch (error) {
+    res.json({
+      error: true,
+      message: 'Problem With Download',
+    });
+  }
 });
 
 app.get('/mp4/:id', async (req, res) => {
-  const info = await ytdl.getInfo(req.params.id);
-  const url = await ytdl(req.params.id, { format: 'mp4' }, {
-    format: 'mpeg'
-  });
+  try {
+    const info = await ytdl.getInfo(req.params.id);
+    const filename = utf8.encode(info.videoDetails.title);
 
-  const filename = utf8.encode(info.videoDetails.title);
-  res.header('Content-Disposition', `attachment; filename = ${filename}.mp4`);
-  url.pipe(res);
+    res.header('Content-Disposition', `attachment; filename = ${filename}.mp4`);
+    ytdl(req.params.id, {
+      format: 'mp4',
+    }).pipe(res);
+  } catch (error) {
+    res.json({
+      error: true,
+      message: 'Problem With Download',
+    });
+  }
 });
 
 app.get('/info/:id', async (req, res) => {
   try {
     const info = await ytdl.getInfo(req.params.id);
-    const max = info.videoDetails.thumbnail.thumbnails.reduce(function(prev, current) {
-      return (prev.height > current.height) ? prev : current
-    });
+    const max = info
+      .videoDetails
+      .thumbnail
+      .thumbnails.reduce((prev, current) => ((prev.height > current.height) ? prev : current));
 
     res.json({
       id: info.videoDetails.videoId,
@@ -48,10 +68,17 @@ app.get('/info/:id', async (req, res) => {
   } catch (err) {
     res.json({
       error: true,
-      message: 'Not Found'
+      message: 'Not Found',
     });
   }
 });
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
 
-const PORT = process.env.PORT || 7080;
-app.listen(PORT, () => { console.log(`listen on port ${PORT}`); })
+// ------------LISTEN--------------------
+const PORT = process.env.PORT || 3005;
+app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
+  console.log(`Server running on port ${PORT}`);
+});
