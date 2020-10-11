@@ -115,11 +115,18 @@ export default {
 
 <style lang="scss" scoped>
 .button {
-  @apply text-red-500 bg-youtube-500 px-6 py-3 rounded-lg ml-2 cursor-pointer;
+  @apply text-red-500;
+  @apply bg-youtube-500;
+  @apply px-6;
+  @apply py-3;
+  @apply rounded-lg;
+  @apply ml-2;
+  @apply cursor-pointer;
 
   &.active,
   &:hover {
-    @apply text-white bg-red-500;
+    @apply text-white;
+    @apply bg-red-500;
   }
 
   &.active {
@@ -128,6 +135,7 @@ export default {
 }
 
 button:disabled {
-  @apply opacity-25 cursor-default;
+  @apply opacity-25;
+  @apply cursor-default;
 }
 </style>
